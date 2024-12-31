@@ -3,4 +3,5 @@ requests
 pandas
 scikit-learn
 numpy
-spacy
+spacy==3.6.0
+spacy[transformers]
