@@ -6,6 +6,15 @@ API_KEY = '1efc9bac137c809078181e5c2c13cafc'
 BASE_URL = 'https://api.themoviedb.org/3'
 IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500'
 
+
+from spacy.cli import download
+
+try:
+    nlp = spacy.load("fr_core_news_md")
+except OSError:
+    download("fr_core_news_md")  # Télécharge automatiquement le modèle
+    nlp = spacy.load("fr_core_news_md")
+
 # Charger le modèle de langue français de spaCy
 nlp = spacy.load("fr_core_news_md")
 
