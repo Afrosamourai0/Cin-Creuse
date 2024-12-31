@@ -1,7 +1,7 @@
 # Cin-Creuse
 Un cinéma de la Creuse, en perte de vitesse, cherche à se moderniser avec un site internet. Défi : créer un moteur de recommandation malgré un cold start. Démarche : analyse des habitudes locales, étude des tendances IMDb et création d’un tableau de bord interactif. Objectif : personnaliser l’offre et attirer le public local.
 
-Voici une version rédigée et explicative pour votre projet :  
+
 
 ---
 
@@ -23,5 +23,3 @@ Pour répondre à ce défi, plusieurs étapes ont été mises en place :
 Ce projet vise à dynamiser la fréquentation du cinéma en proposant une expérience utilisateur enrichie et personnalisée. Le moteur de recommandation, couplé à une interface moderne et intuitive, permettra d’attirer à nouveau les spectateurs locaux en leur offrant un service digital adapté à leurs attentes.  
 
 ---  
-
-Ce texte peut être adapté ou enrichi selon vos besoins ! Qu'en pensez-vous ?
