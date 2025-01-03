@@ -1,117 +1,79 @@
 import streamlit as st
-import requests
-import spacy
-
-API_KEY = '1efc9bac137c809078181e5c2c13cafc'
-BASE_URL = 'https://api.themoviedb.org/3'
-IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500'
-
-
-from spacy.cli import download
-
-try:
-    nlp = spacy.load("fr_core_news_md")
-except OSError:
-    download("fr_core_news_md")  # Télécharge automatiquement le modèle
-    nlp = spacy.load("fr_core_news_md")
-
-# Charger le modèle de langue français de spaCy
-nlp = spacy.load("fr_core_news_md")
-
-# Fonction pour extraire des mots-clés ou effectuer une analyse NLP sur un texte
-def extract_keywords_with_nlp(text):
-    doc = nlp(text)
-    # Garder les noms, adjectifs, et verbes pour les mots-clés
-    keywords = [token.text for token in doc if token.pos_ in ["NOUN", "ADJ", "VERB"]]
-    return keywords
-
-# Fonction pour rechercher des films
-@st.cache_data
-def recommend_movies(sort_by="popularity.desc", genre=None):
-    try:
-        url = f"{BASE_URL}/discover/movie"
-        params = {"api_key": API_KEY, "language": "fr-FR", "sort_by": sort_by}
-        if genre:
-            params["with_genres"] = genre
-        response = requests.get(url, params=params)
-        response.raise_for_status()
-        return response.json()
-    except Exception as e:
-        st.error(f"Erreur lors de la recherche de films : {e}")
-        return {"results": []}
-
-# Fonction pour effectuer une similarité basée sur les descriptions ou titres
-def find_similar_movies(user_input, movies, field="overview"):
-    user_doc = nlp(user_input)
-    recommendations = []
-    
-    for movie in movies:
-        movie_text = movie.get(field, "")
-        if movie_text:
-            movie_doc = nlp(movie_text)
-            similarity = user_doc.similarity(movie_doc)
-            recommendations.append((movie, similarity))
-    
-    # Trier les films par similarité décroissante
-    recommendations.sort(key=lambda x: x[1], reverse=True)
-    return recommendations
-
-# Fonction pour afficher les films recommandés
-def display_recommended_movies(recommendations, top_n=10):
-    for movie, similarity in recommendations[:top_n]:
-        col1, col2 = st.columns([1, 3])
-        with col1:
-            poster_url = f"{IMAGE_BASE_URL}{movie['poster_path']}" if movie.get("poster_path") else ""
-            if poster_url:
-                st.image(poster_url, use_container_width=True)
-
-        with col2:
-            st.write(f"### **{movie['title']}** ({movie['release_date'][:4] if movie.get('release_date') else 'N/A'})")
-            st.write(f"**Similarité avec votre idée :** {similarity:.2f}")
-            st.write(f"**Résumé :** {movie['overview']}")
-            st.write(f"**Genres :** {', '.join([genre['name'] for genre in movie['genres']]) if movie.get('genres') else 'N/A'}")
-            st.write(f"**Note moyenne :** {movie['vote_average']}/10")
-            st.write("---")
 
 def main():
-    st.title("🎬 Recommandation de films basée sur votre idée (NLP)")
+    st.set_page_config(page_title="Proposition de Solution NLP - Recommandation de Films", layout="wide")
 
-    # Demander à l'utilisateur une idée de film
-    user_input = st.text_input("💡 Entrez une idée de film ou un thème qui vous intéresse", placeholder="Exemple : Action avec des super-héros")
+    # Titre principal
+    st.title("🎬 **Proposition de Solution NLP pour une Recommandation de Films Personnalisée**")
 
-    # Choix du filtre (popularité, genre, etc.)
-    sort_by = st.selectbox("Trier les films par", options=["popularité", "date de sortie"], index=0)
-    genre_option = st.selectbox("Choisissez un genre", options=["Tous"] + ["Action", "Comédie", "Drame", "Horreur", "Science-fiction"], index=0)
+    # Introduction animée
+    st.markdown("""
+    Nous vous présentons une **solution innovante** et **intelligente** pour améliorer votre système de recommandation de films : une approche **basée sur le Traitement Automatique du Langage Naturel (NLP)**. 🚀
 
-    if genre_option != "Tous":
-        genre_dict = {
-            "Action": 28,
-            "Comédie": 35,
-            "Drame": 18,
-            "Horreur": 27,
-            "Science-fiction": 878,
-        }
-        genre = genre_dict.get(genre_option)
-    else:
-        genre = None
+    Cette proposition vise à rendre vos recommandations plus **précises**, **personnalisées** et **adaptées** aux goûts de chaque utilisateur, pour une expérience optimale.
 
-    if st.button("Rechercher des films") and user_input:
-        st.write(f"Vous avez entré l'idée : **{user_input}**")
+    Dans ce livrable, nous vous montrons comment transformer de simples préférences textuelles en suggestions de films parfaitement ajustées grâce à l'analyse avancée des descriptions et critiques de films.
+    """)
 
-        # Rechercher des films populaires avec un filtre de genre
-        movies = recommend_movies(sort_by="popularity.desc", genre=genre)["results"]
+    # Objectifs du livrable
+    st.header("🎯 **Objectifs de notre Proposition**")
+    st.markdown("""
+    Grâce au NLP, notre objectif est de vous fournir :
 
-        # Comparer avec les descriptions ou les titres
-        st.write("🔍 Recherche basée sur les descriptions des films...")
-        similar_movies = find_similar_movies(user_input, movies, field="overview")
+    - **Une compréhension approfondie des préférences utilisateur** : Analyser et extraire des **thèmes**, **émotions** et **sentiments** des textes fournis par les utilisateurs pour personnaliser leurs suggestions de films.
+    - **Des recommandations de films hyper-précises** : Adapter la recherche à des critères détaillés tels que les **émotions** ressenties, les **thèmes** abordés, ou même les **ambiance** recherchées.
+    - **Une interface interactive et intuitive** : Permettre aux utilisateurs de rechercher et découvrir des films d'une manière simple, tout en leur offrant des suggestions basées sur des critères avancés.
 
-        if similar_movies:
-            st.write(f"**Top {len(similar_movies)} films recommandés :**")
-            display_recommended_movies(similar_movies, top_n=10)
-        else:
-            st.warning("Aucun film similaire trouvé. Essayez une autre idée.")
-    elif not user_input:
-        st.warning("Veuillez entrer une idée pour commencer la recherche de films.")
+    En utilisant cette approche, vous allez offrir à vos utilisateurs **une expérience unique** et **personnalisée** !
+    """)
+
+    # Pourquoi le NLP est-il essentiel ?
+    st.header("🌟 **Pourquoi choisir le NLP pour vos recommandations ?**")
+    st.markdown("""
+    Le **NLP** est la clé pour révolutionner la manière dont vous recommandez des films. Voici pourquoi :
+
+    - **Compréhension du langage naturel** : Le NLP permet de traiter et d'analyser les textes des utilisateurs, des descriptions de films, et même des critiques pour extraire des éléments clés qui sont souvent invisibles pour un algorithme traditionnel.
+    - **Amélioration des recommandations** : Au lieu de simplement se baser sur les genres ou les notes des films, notre système prend en compte les **émotions** et **sentiments** des films et des utilisateurs. Cela permet des suggestions beaucoup plus pertinentes et ciblées.
+    - **Adaptabilité et personnalisation avancée** : En comprenant mieux ce que l’utilisateur recherche (une ambiance spécifique, un thème particulier, une émotion ressentie), le système peut répondre de manière plus fine et plus intuitive.
+
+    Cela ouvre un **nouveau monde d’opportunités** pour offrir des recommandations vraiment **intelligentes** et **sur mesure**.
+    """)
+
+    # Fonctionnement du livrable proposé
+    st.header("🔧 **Comment fonctionne cette solution NLP ?**")
+    st.markdown("""
+    Voici comment votre système de recommandation bénéficiera de cette approche NLP :
+
+    1. **Recherche intelligente basée sur des idées** : L'utilisateur exprime son envie sous forme de texte naturel (par exemple : "Je veux un film d'action avec des super-héros").
+    2. **Analyse avancée des films** : Chaque film est analysé en profondeur à partir de ses **résumés**, **critiques**, et **métadonnées** pour extraire ses **thèmes**, **émotions**, et **genres**.
+    3. **Suggestions personnalisées** : Grâce à l’analyse sémantique, nous proposons des films qui **correspondent parfaitement** à l’intention de l'utilisateur, allant au-delà des simples catégories classiques.
+
+    Cette solution est conçue pour être **interactive**, **intuitive** et **efficace**, afin de maximiser l’engagement des utilisateurs tout en leur offrant des recommandations qui les touchent réellement.
+    """)
+
+    # Valeur ajoutée de cette proposition
+    st.header("💡 **Valeur ajoutée de cette solution NLP**")
+    st.markdown("""
+    En intégrant cette solution NLP, vous bénéficiez de plusieurs avantages décisifs pour votre service de recommandation de films :
+
+    - **Recommandations plus pertinentes** : Analyse contextuelle des descriptions et des critiques pour offrir des suggestions qui répondent à des attentes plus spécifiques (émotions, thèmes, atmosphères).
+    - **Personnalisation poussée** : Au lieu de se limiter à des critères basiques, notre approche permet de comprendre des demandes plus complexes et plus nuancées, comme les préférences émotionnelles ou les valeurs.
+    - **Expérience utilisateur optimisée** : Un utilisateur qui recherche des films ayant un **mood spécifique** ou un **thème particulier** sera bien plus satisfait d’une interface qui lui propose des films qui correspondent précisément à ces attentes.
+    - **Amélioration continue** : Grâce aux **données collectées**, le système peut être continuellement ajusté et optimisé pour répondre encore mieux aux demandes des utilisateurs.
+
+    Vous serez ainsi en mesure de **fidéliser** vos utilisateurs tout en leur offrant une expérience beaucoup plus enrichissante et immersive.
+    """)
+
+    # Conclusion
+    st.header("🚀 **Conclusion et prochaines étapes**")
+    st.markdown("""
+    Cette solution NLP pour la recommandation de films est une **avancée majeure** pour offrir une expérience plus **personnalisée** et **engageante** à vos utilisateurs. En utilisant cette approche, vous pourrez vous différencier en proposant des suggestions non seulement pertinentes, mais aussi **émotionnellement connectées** aux attentes de vos utilisateurs.
+
+    Nous vous invitons à discuter de cette proposition pour l’adapter à vos besoins spécifiques et commencer à travailler ensemble sur l'implémentation de cette solution innovante.
+
+    N’hésitez pas à nous contacter pour toute question ou pour planifier une rencontre afin de discuter des prochaines étapes. Ensemble, nous pouvons faire de votre système de recommandation un **outil vraiment intelligent** !
+    """)
 
 if __name__ == "__main__":
     main()
+
