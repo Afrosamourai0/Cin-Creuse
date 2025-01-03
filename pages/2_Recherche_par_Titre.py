@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
 import requests
+from difflib import get_close_matches
 
 # Chargement des données (remplacez "df" par le chemin correct de votre fichier)
 input_file = "df"  # Remplacez cette ligne par le chemin réel de votre fichier .parquet
@@ -47,22 +48,25 @@ def get_movie_details(imdb_id):
 
 # Fonction pour afficher un film
 def display_movie(movie, is_similar=False):
-    st.markdown(f"### 🎬 {movie['original_title']}")
-    st.markdown(f"**Note moyenne :** {movie['note moyenne']}/10")
-    st.markdown(f"**Durée :** {movie['runtimeMinutes']} minutes")
-    st.markdown(f"**Année de sortie :** {movie['startYear']}")
-    st.markdown(f"**Pays de production :** {movie['country_product_first']}")
-    st.markdown(f"**Genres :** {movie['genres_x']}")
+    col1, col2 = st.columns([1, 2])
+    with col1:
+        # Détails via l'API
+        description, trailer_key, poster_url = get_movie_details(movie['imdb_id'])
+        if poster_url:
+            st.image(poster_url, use_container_width=True)
+    with col2:
+        st.markdown(f"### 🎬 {movie['original_title']}")
+        st.markdown(f"**Note moyenne :** {movie['note moyenne']}/10")
+        st.markdown(f"**Durée :** {movie['runtimeMinutes']} minutes")
+        st.markdown(f"**Année de sortie :** {movie['startYear']}")
+        st.markdown(f"**Pays de production :** {movie['country_product_first']}")
+        st.markdown(f"**Genres :** {movie['genres_x']}")
 
-    # Détails via l'API
-    description, trailer_key, poster_url = get_movie_details(movie['imdb_id'])
-    if description:
-        st.markdown(f"**Description :** {description}")
-    if poster_url:
-        st.image(poster_url, use_container_width=True)
-    if trailer_key:
-        trailer_url = f"https://www.youtube.com/watch?v={trailer_key}"
-        st.markdown(f"**Bande-annonce :** [Voir sur YouTube]({trailer_url})")
+        if description:
+            st.markdown(f"**Description :** {description}")
+        if trailer_key:
+            trailer_url = f"https://www.youtube.com/watch?v={trailer_key}"
+            st.markdown(f"**Bande-annonce :** [Voir sur YouTube]({trailer_url})")
 
     if is_similar:
         st.write("---")
@@ -86,6 +90,12 @@ def recommend_movies(film):
     for _, similar_movie in similar_df.iterrows():
         display_movie(similar_movie, is_similar=True)
 
+# Fonction pour trouver un film par recherche approximative
+def find_closest_movie(movie_name):
+    titles = df['original_title'].tolist()
+    closest_matches = get_close_matches(movie_name, titles, n=1, cutoff=0.6)
+    return closest_matches[0] if closest_matches else None
+
 # Fonction principale
 def main():
     st.title("🎬 Recommandation de films basées sur votre film préféré")
@@ -94,17 +104,23 @@ def main():
     movie_name = st.text_input("Entrez le titre d'un film", placeholder="Exemple : Inception")
 
     if movie_name:
-        # Afficher les détails du film sélectionné
-        film_data = df[df['original_title'] == movie_name]
-        if not film_data.empty:
-            st.markdown("## 📝 Détails du film choisi :")
-            display_movie(film_data.iloc[0])
+        # Rechercher le titre le plus proche
+        closest_match = find_closest_movie(movie_name)
+
+        if closest_match:
+            with st.spinner("Chargement des informations du film..."):
+                st.markdown("## 📝 Détails du film choisi :")
+                film_data = df[df['original_title'] == closest_match]
+                display_movie(film_data.iloc[0])
+
+            st.success(f"Très bon choix ! 🎉 (Saviez-vous que vous cherchiez peut-être : {closest_match}?)")
 
             # Bouton pour trouver des films similaires
             if st.button("Afficher les films similaires"):
-                recommend_movies(movie_name)
+                with st.spinner("Recherche des films similaires..."):
+                    recommend_movies(closest_match)
         else:
-            st.error(f"Aucun film trouvé avec le titre : {movie_name}")
+            st.error(f"Aucun film trouvé correspondant à : {movie_name}")
 
 # Lancement de l'application
 if __name__ == "__main__":
