@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
 import requests
-from difflib import get_close_matches
+
 
 # Chargement des données (remplacez "df" par le chemin correct de votre fichier)
 input_file = "df"  # Remplacez cette ligne par le chemin réel de votre fichier .parquet
