@@ -106,7 +106,7 @@ st.markdown("<h1 class='main-title'>🎬 Recommandation de Films</h1>", unsafe_a
 # Ajouter une image sur la page de présentation
 st.markdown("""
 <div style="text-align: center;">
-    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiX1Qz_IPtxWOjPmQtWU9zO1TTxmafZ80Sfg&s" alt="Image de présentation" style="width:50%; border-radius:10px;">
+    <img src="https://www.cia-france.fr/media/1492/les-films-incontournables-du-cinema-w_1700x595.webp" alt="Image de présentation" style="width:50%; border-radius:10px;">
 </div>
 """, unsafe_allow_html=True)
 
