@@ -7,10 +7,7 @@ def main():
     # Titre de l'application avec un emoji
     st.title("📊 Tableau de bord Power BI et PowerPoint")
 
-    # Ajouter une image d'illustration dans le sidebar
-    st.sidebar.image("https://www.jeveuxetredatascientist.fr/wp-content/uploads/2021/04/power-bi-logo.jpg", width=150)
-    st.sidebar.image("https://tse2.mm.bing.net/th?id=OIP.iDTOWshVxOYz6x11vEZ7dwHaHa&pid=Api&P=0&h=180", width=150)
-
+  
     # Texte du rapport affiché dans la sidebar avec un style
     texte_rapport = """
     ### Rapport de Marché du Cinéma
