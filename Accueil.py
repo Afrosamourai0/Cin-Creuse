@@ -56,22 +56,23 @@ st.markdown("""
     <style>
         body {
             background-color: #000000;
+            color: #000000;  /* Texte noir */
         }
         .main-title {
             text-align: center;
-            color: #ffffff;
+            color: #000000; /* Texte noir */
             font-size: 48px;
             font-weight: bold;
         }
         .description {
             text-align: center;
-            color: #ffffff;
+            color: #000000; /* Texte noir */
             font-size: 16px;
             margin-top: -10px;
         }
         .subheader {
             font-size: 24px;
-            color: #01b4e4;
+            color: #000000; /* Texte noir */
             font-weight: bold;
             margin-top: 30px;
         }
@@ -86,7 +87,7 @@ st.markdown("""
         .film-title {
             font-size: 18px;
             font-weight: bold;
-            color: #ffffff;
+            color: #000000; /* Texte noir */
         }
         .film-note {
             color: #ff6347;
@@ -95,7 +96,7 @@ st.markdown("""
         .film-details {
             margin-top: 10px;
             font-size: 14px;
-            color: #d3d3d3;
+            color: #000000; /* Texte noir */
         }
     </style>
 """, unsafe_allow_html=True)
