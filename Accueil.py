@@ -64,11 +64,18 @@ st.markdown("""
             font-size: 48px;
             font-weight: bold;
         }
+        .welcome-title {
+            text-align: center;
+            color: #ff6347; /* Couleur rouge */
+            font-size: 80px;
+            font-weight: bold;
+            margin-top: 50px;
+        }
         .description {
             text-align: center;
             color: #000000; /* Texte noir */
             font-size: 16px;
-            margin-top: -10px;
+            margin-top: 20px;  /* Ajouter de l'espace entre l'image et le texte */
         }
         .subheader {
             font-size: 24px;
@@ -102,12 +109,15 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Titre principal
-st.markdown("<h1 class='main-title'>🎬 Recommandation de Films</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='main-title'>🎬 Bienvenue sur CinéCreuse 🎬</h1>", unsafe_allow_html=True)
+
+# Titre Bienvenue dans la Creuse
+st.markdown("<h1 class='welcome-title'>🍿 Le Meilleur site de recommandations de Films dans la Creuse 🍿</h1>", unsafe_allow_html=True)
 
 # Ajouter une image sur la page de présentation
 st.markdown("""
 <div style="text-align: center;">
-    <img src="https://www.cia-france.fr/media/1492/les-films-incontournables-du-cinema-w_1700x595.webp" alt="Image de présentation" style="width:50%; border-radius:10px;">
+    <img src="https://www.cia-france.fr/media/1492/les-films-incontournables-du-cinema-w_1700x595.webp" alt="Image de présentation" style="width:50%; border-radius:10px; margin-bottom: 30px;">
 </div>
 """, unsafe_allow_html=True)
 
@@ -168,9 +178,13 @@ if popular_movies["results"]:
             overview = movie['overview'] if movie['overview'] else "Résumé non disponible."
             # Limiter la description
             max_chars = 150
-            if len(overview) > max_chars:
-                overview = overview[:max_chars] + "..."
-            st.markdown(f"<p class='film-details'>{overview}</p>", unsafe_allow_html=True)
+            short_overview = overview[:max_chars] + "..." if len(overview) > max_chars else overview
+
+            # Affichage de l'overview avec possibilité de voir la suite
+            if st.button(f"Lire la suite pour {movie['title']}"):
+                st.markdown(f"<p class='film-details'>{overview}</p>", unsafe_allow_html=True)
+            else:
+                st.markdown(f"<p class='film-details'>{short_overview}</p>", unsafe_allow_html=True)
             
             # Bande-annonce
             if trailer_url:
@@ -179,3 +193,4 @@ if popular_movies["results"]:
             st.markdown("</div>", unsafe_allow_html=True)
 else:
     st.write("Aucun film populaire trouvé pour le moment.")
+
