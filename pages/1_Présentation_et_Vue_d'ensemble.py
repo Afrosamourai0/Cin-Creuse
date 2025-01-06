@@ -48,7 +48,7 @@ def main():
     
     elif option == "PowerPoint":
         # Lien vers le PowerPoint
-        ppt_link = "https://onedrive.live.com/personal/6a73f71480a4fc8e/_layouts/15/Doc.aspx?sourcedoc=%7B2f9cb413-5d8c-41b6-a9ea-c16cc414ac10%7D&action=default&redeem=aHR0cHM6Ly8xZHJ2Lm1zL3AvYy82YTczZjcxNDgwYTRmYzhlL0VSTzBuQy1NWGJaQnFlckJiTVFVckJBQm1HM05xanJYVWhoRTdTSG51TFRNVWc_ZT1xZGo4bWI&slrid=beed73a1-20ad-a000-ec05-4ce9fd3161fc&originalPath=aHR0cHM6Ly8xZHJ2Lm1zL3AvYy82YTczZjcxNDgwYTRmYzhlL0VSTzBuQy1NWGJaQnFlckJiTVFVckJBQm1HM05xanJYVWhoRTdTSG51TFRNVWc_cnRpbWU9eHRpMmJnY3MzVWc&CID=9d616f74-24bb-4867-b2ca-10508f450fce&_SRM=0:G:57&file=Etude%20de%20march%c3%a9_Projet%202%20(1).pptx"
+        ppt_link = "https://onedrive.live.com/:p:/g/personal/6A73F71480A4FC8E/EQF8omnMvCxKvnPvUyYLtlUBHCocwCihzKFSEcUrVQX4Eg?resid=6A73F71480A4FC8E!s69a27c01bccc4a2cbe73ef53260bb655&ithint=file%2Cpptx&e=dVtWzc&migratedtospo=true&redeem=aHR0cHM6Ly8xZHJ2Lm1zL3AvYy82YTczZjcxNDgwYTRmYzhlL0VRRjhvbW5NdkN4S3ZuUHZVeVlMdGxVQkhDb2N3Q2loektGU0VjVXJWUVg0RWc_ZT1kVnRXemM"
 
         # Lien pour afficher le PowerPoint
         st.subheader("📑 **Présentation PowerPoint**")
