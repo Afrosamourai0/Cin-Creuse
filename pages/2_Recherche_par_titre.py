@@ -124,18 +124,7 @@ def main():
                 for _, similar_movie in similar_movies.iterrows():
                     display_movie(similar_movie)  # Afficher les films similaires trouvés
 
-        # Recherche par correspondance partielle
-        if st.button("Rechercher des films correspondants partiellement"):
-            matching_titles = find_partial_movie(movie_name)
-            if matching_titles:
-                st.markdown("### Films correspondants par recherche partielle :")
-                # Exclure le film déjà choisi de la liste
-                matching_titles = [title for title in matching_titles if title != selected_movie_title]
-                for title in matching_titles:
-                    film_data = df[df['original_title'] == title]
-                    display_movie(film_data.iloc[0])  # Afficher les détails du film trouvé
-            else:
-                st.error(f"Aucun film trouvé correspondant à : {movie_name}")
+       
 
 if __name__ == "__main__":
     main()
