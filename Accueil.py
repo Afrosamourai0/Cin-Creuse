@@ -84,7 +84,7 @@ st.markdown("""
             margin-top: 30px;
         }
         .film-card {
-            background-color: #1e1e1e;
+            background-color: #rgb(252, 250, 250);
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
             padding: 15px;
